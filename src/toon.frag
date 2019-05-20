@@ -57,6 +57,7 @@ uniform SpotLight spotLight;
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
+float CalcDetail(float z, vec3 normal, vec3 viewDir);
 
 void main() {
 	vec3 norm = normalize(Normal);
@@ -69,7 +70,9 @@ void main() {
 
 	result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
-	vec3 toonLight = vec3(texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, 1.0f)));
+	float detail = CalcDetail(length(viewPos - FragPos), norm, viewDir);
+
+	vec3 toonLight = vec3(texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, detail)));
 
 	FragColor = vec4(toonLight, 1.0);
 	
@@ -138,8 +141,10 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 }
 
 float CalcDetail(float z, vec3 normal, vec3 viewDir){
-	 float z_min = 5;
+	 float z_min = 3;
 	 float z_max = 15;
+	 if(z > z_max)
+		z = z_max;
 	 float r = z_max/z_min;
 	 float depthDetail = 1- (log(z/z_min) / log(r));
 
