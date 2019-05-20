@@ -13,6 +13,7 @@ newmtl BodyB
 	Ks 0.2000 0.2000 0.2000
 	Ke 0.0000 0.0000 0.0000
 	map_Kd FitLink00_BodyB.png
+	map_Ks 2D_toon_texture.png
 
 newmtl FitLink_Grip
 	Ns 43.2193
