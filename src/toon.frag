@@ -133,3 +133,15 @@ vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir) {
 
     return (ambient + diffuse + specular);
 }
+
+float CalcDetail(float z, vec3 normal, vec3 viewDir){
+	 float z_min = 5;
+	 float z_max = 15;
+	 float r = z_max/z_min;
+	 float depthDetail = 1- (log(z/z_min) / log(r));
+
+	 float orientationDetailMagnitude = 1;
+	 float orientationDetail = pow(dot(normal, viewDir), orientationDetailMagnitude);
+
+	return min(depthDetail, orientationDetail);
+}
