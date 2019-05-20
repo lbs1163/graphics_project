@@ -68,13 +68,14 @@ void main() {
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
 
-	result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
+	//result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
 	float detail = CalcDetail(length(viewPos - FragPos), norm, viewDir);
 
-	vec3 toonLight = vec3(texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, detail)));
+	vec4 toonLight = texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, detail));
+	vec4 textureColor = texture(material.texture_diffuse1, TexCoords);
 
-	FragColor = vec4(toonLight, 1.0);
+	FragColor = toonLight * textureColor;
 	
 }
 

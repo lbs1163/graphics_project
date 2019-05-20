@@ -9,6 +9,7 @@ Ni 1.000000
 d 1.000000
 illum 2
 map_Kd PikachuDh.png
+map_Ks toon_texture.png
 
 
 newmtl PikachuEyeDh_PikachuEyeDh.png
