@@ -64,53 +64,7 @@ int main(void) {
 	Model ourModel("./resources/models/pikachu/Pikachu.obj");
 
 	toonShader.use();
-	toonShader.setFloat("material.shininess", 32.0f);
-
-	toonShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
-	toonShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
-	toonShader.setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
-
-	toonShader.setVec3("pointLights[0].position", pointLightPositions[0]);
-	toonShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
-	toonShader.setFloat("pointLights[0].constant", 1.0f);
-	toonShader.setFloat("pointLights[0].linear", 0.09f);
-	toonShader.setFloat("pointLights[0].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-	toonShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
-	toonShader.setFloat("pointLights[1].constant", 1.0f);
-	toonShader.setFloat("pointLights[1].linear", 0.09f);
-	toonShader.setFloat("pointLights[1].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-	toonShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
-	toonShader.setFloat("pointLights[2].constant", 1.0f);
-	toonShader.setFloat("pointLights[2].linear", 0.09f);
-	toonShader.setFloat("pointLights[2].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-	toonShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
-	toonShader.setFloat("pointLights[3].constant", 1.0f);
-	toonShader.setFloat("pointLights[3].linear", 0.09f);
-	toonShader.setFloat("pointLights[3].quadratic", 0.032f);
-
-	toonShader.setVec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
-	toonShader.setVec3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
-	toonShader.setVec3("spotLight.specular", glm::vec3(1.0f, 1.0f, 1.0f));
-	toonShader.setFloat("spotLight.constant", 1.0f);
-	toonShader.setFloat("spotLight.linear", 0.09f);
-	toonShader.setFloat("spotLight.quadratic", 0.032f);
-	toonShader.setFloat("spotLight.cutOff", glm::cos(glm::radians(22.5f)));
-	toonShader.setFloat("spotLight.outerCutOff", glm::cos(glm::radians(25.0f)));
+	toonShader.setVec3("viewPos", camera.Position);
 
 	while (!glfwWindowShouldClose(window)) {
 		float currentFrame = (float)glfwGetTime();
@@ -123,7 +77,6 @@ int main(void) {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		toonShader.use();
-		toonShader.setVec3("viewPos", camera.Position);
 		toonShader.setVec3("spotLight.position", camera.Position);
 		toonShader.setVec3("spotLight.direction", camera.Front);
 
