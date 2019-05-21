@@ -28,6 +28,8 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
+bool useToon = true;
+
 int main(void) {
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
@@ -126,6 +128,7 @@ int main(void) {
 		toonShader.setVec3("viewPos", camera.Position);
 		toonShader.setVec3("spotLight.position", camera.Position);
 		toonShader.setVec3("spotLight.direction", camera.Front);
+		toonShader.setBool("useToon", useToon);
 
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
@@ -184,4 +187,6 @@ void processInput(GLFWwindow *window) {
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+		useToon = !useToon;
 }

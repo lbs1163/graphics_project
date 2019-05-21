@@ -53,6 +53,7 @@ uniform Material material;
 uniform DirLight dirLight;
 uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
+uniform bool useToon;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -65,8 +66,8 @@ void main() {
 
     vec3 result = CalcDirLight(dirLight, norm, viewDir);
 
-    for(int i = 0; i < NR_POINT_LIGHTS; i++)
-        result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
+    //for(int i = 0; i < NR_POINT_LIGHTS; i++)
+    //    result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
 
 	//result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
@@ -75,8 +76,10 @@ void main() {
 	vec4 toonLight = texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, detail));
 	vec4 textureColor = texture(material.texture_diffuse1, TexCoords);
 
-	FragColor = toonLight * textureColor;
-	
+	if (useToon)
+		FragColor = toonLight * textureColor;
+	else
+		FragColor = vec4(result, 1.0f) * textureColor;
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
