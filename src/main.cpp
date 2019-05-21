@@ -63,7 +63,7 @@ int main(void) {
 	};
 
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
-	Model ourModel("./resources/models/pikachu/Pikachu.obj");
+	Model ourModel("./resources/models/IronMan/IronMan.obj");
 
 	toonShader.use();
 	toonShader.setFloat("material.shininess", 32.0f);
@@ -137,7 +137,7 @@ int main(void) {
 
 		glm::mat4 model = glm::mat4(1.0f);
 		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.2f, 0.2f, 0.2f));
+		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
 		toonShader.setMat4("model", model);
 
 		ourModel.Draw(toonShader);

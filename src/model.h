@@ -94,15 +94,30 @@ private:
 				indices.push_back(face.mIndices[j]);
 		}
 
+		bool useTexture = false;
+		glm::vec3 Ka, Kd, Ks;
+		float Ns;
+
 		if (mesh->mMaterialIndex >= 0) {
+			useTexture = true;
 			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
+
+			aiColor3D color(0.f, 0.f, 0.f);
+			material->Get(AI_MATKEY_COLOR_AMBIENT, color);
+			Ka = glm::vec3(color.r, color.g, color.b);
+			material->Get(AI_MATKEY_COLOR_DIFFUSE, color);
+			Kd = glm::vec3(color.r, color.g, color.b);
+			material->Get(AI_MATKEY_COLOR_SPECULAR, color);
+			Ks = glm::vec3(color.r, color.g, color.b);
+			material->Get(AI_MATKEY_SHININESS, Ns);
+
 			vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
 			vector <Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
 		}
 
-		return Mesh(vertices, indices, textures);
+		return Mesh(vertices, indices, textures, useTexture, Ka, Kd, Ks, Ns);
 	}
 
 	vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, string typeName) {

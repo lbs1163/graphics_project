@@ -55,6 +55,12 @@ uniform PointLight pointLights[NR_POINT_LIGHTS];
 uniform SpotLight spotLight;
 uniform bool useToon;
 
+uniform bool useTexture;
+uniform vec3 Ka;
+uniform vec3 Kd;
+uniform vec3 Ks;
+uniform vec3 Ns;
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -74,12 +80,13 @@ void main() {
 	float detail = CalcDetail(length(viewPos - FragPos), norm, viewDir);
 
 	vec4 toonLight = texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, detail));
-	vec4 textureColor = texture(material.texture_diffuse1, TexCoords);
+	vec4 textureColor = vec4(Kd, 1.0f);
 
-	if (useToon)
-		FragColor = toonLight * textureColor;
-	else
-		FragColor = vec4(result, 1.0f) * textureColor;
+	//if (useToon)
+	//	FragColor = toonLight * textureColor;
+	//else
+	//	FragColor = vec4(result, 1.0f) * textureColor;
+	FragColor = vec4(Kd, 1.0f);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
