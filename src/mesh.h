@@ -45,8 +45,6 @@ public:
 		this->Ks = Ks;
 		this->Ns = Ns;
 
-		printf("%f %f %f\n", Kd.x, Kd.y, Kd.z);
-
 		setupMesh();
 	}
 

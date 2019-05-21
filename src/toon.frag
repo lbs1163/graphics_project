@@ -79,14 +79,15 @@ void main() {
 
 	float detail = CalcDetail(length(viewPos - FragPos), norm, viewDir);
 
-	vec4 toonLight = texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, detail));
-	vec4 textureColor = vec4(Kd, 1.0f);
+	vec4 toonLight = texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, 1));
+	vec4 textureColor = useTexture ? texture(material.texture_diffuse1, TexCoords) : vec4(Kd, 1.0f);
 
-	//if (useToon)
-	//	FragColor = toonLight * textureColor;
-	//else
-	//	FragColor = vec4(result, 1.0f) * textureColor;
-	FragColor = vec4(Kd, 1.0f);
+	FragColor = toonLight;
+
+	if (useToon)
+		FragColor = toonLight * textureColor;
+	else
+		FragColor = vec4(result, 1.0f) * textureColor;
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {

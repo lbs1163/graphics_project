@@ -99,7 +99,6 @@ private:
 		float Ns;
 
 		if (mesh->mMaterialIndex >= 0) {
-			useTexture = true;
 			aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
 
 			aiColor3D color(0.f, 0.f, 0.f);
