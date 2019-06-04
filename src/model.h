@@ -112,8 +112,11 @@ private:
 
 			vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
 			textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-			vector <Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+			vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
 			textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+
+			if (diffuseMaps.size() > 0)
+				useTexture = true;
 		}
 
 		return Mesh(vertices, indices, textures, useTexture, Ka, Kd, Ks, Ns);
