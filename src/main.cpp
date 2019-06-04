@@ -54,6 +54,10 @@ int main(void) {
 	}
 
 	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	glEnable(GL_STENCIL_TEST);
+	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	glm::vec3 pointLightPositions[] = {
 		glm::vec3(0.7f,  0.2f,  2.0f),
@@ -63,6 +67,7 @@ int main(void) {
 	};
 
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
+	Shader outlineShader("./src/outline.vert", "./src/outline.frag");
 	Model ourModel("./resources/models/85-cottage_obj/cottage_obj.obj");
 
 	toonShader.use();
@@ -122,7 +127,7 @@ int main(void) {
 		processInput(window);
 
 		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		toonShader.use();
 		toonShader.setVec3("viewPos", camera.Position);
@@ -140,7 +145,23 @@ int main(void) {
 		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
 		toonShader.setMat4("model", model);
 
+		glStencilFunc(GL_ALWAYS, 1, 0xFF);
+		glStencilMask(0xFF);
 		ourModel.Draw(toonShader);
+
+		outlineShader.use();
+		float scale = 1.1f;
+		model = glm::scale(model, glm::vec3(scale, scale, scale));
+		outlineShader.setMat4("projection", projection);
+		outlineShader.setMat4("view", view);
+		outlineShader.setMat4("model", model);
+		
+		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+		glStencilMask(0x00);
+		glDisable(GL_DEPTH_TEST);
+		ourModel.Draw(outlineShader);
+		glStencilMask(0xFF);
+		glEnable(GL_DEPTH_TEST);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
