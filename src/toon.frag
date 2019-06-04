@@ -1,7 +1,7 @@
 #version 460 core
 out vec4 FragColor;
 
-#define NR_POINT_LIGHTS 4
+#define NR_POINT_LIGHTS 1
 
 struct Material {
     sampler2D texture_diffuse1;
@@ -75,7 +75,7 @@ void main() {
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
 
-	result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
+	//result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
 	float detail = CalcDetail(length(viewPos - FragPos), norm, viewDir);
 

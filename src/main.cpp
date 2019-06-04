@@ -20,7 +20,7 @@ void processInput(GLFWwindow *window);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -28,7 +28,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-bool useToon = true;
+bool useToon = false;
 
 int main(void) {
 	glfwInit();
@@ -55,15 +55,8 @@ int main(void) {
 
 	glEnable(GL_DEPTH_TEST);
 
-	glm::vec3 pointLightPositions[] = {
-		glm::vec3(0.7f,  0.2f,  2.0f),
-		glm::vec3(2.3f, -3.3f, -4.0f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
-		glm::vec3(0.0f,  0.0f, -3.0f)
-	};
-
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
-	Model ourModel("./resources/models/85-cottage_obj/cottage_obj.obj");
+	Model ourModel("./resources/models/Pirates/source/Ship.fbx");
 
 	toonShader.use();
 	toonShader.setFloat("material.shininess", 32.0f);
@@ -73,37 +66,13 @@ int main(void) {
 	toonShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 	toonShader.setVec3("dirLight.specular", 0.0f, 0.0f, 0.0f);
 
-	toonShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+	toonShader.setVec3("pointLights[0].position", 5.0f, 5.0f, 5.0f);
 	toonShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
 	toonShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
 	toonShader.setVec3("pointLights[0].specular", 0.0f, 0.0f, 0.0f);
 	toonShader.setFloat("pointLights[0].constant", 1.0f);
-	toonShader.setFloat("pointLights[0].linear", 0.09f);
-	toonShader.setFloat("pointLights[0].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-	toonShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[1].specular", 0.0f, 0.0f, 0.0f);
-	toonShader.setFloat("pointLights[1].constant", 1.0f);
-	toonShader.setFloat("pointLights[1].linear", 0.09f);
-	toonShader.setFloat("pointLights[1].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-	toonShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[2].specular", 0.0f, 0.0f, 0.0f);
-	toonShader.setFloat("pointLights[2].constant", 1.0f);
-	toonShader.setFloat("pointLights[2].linear", 0.09f);
-	toonShader.setFloat("pointLights[2].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-	toonShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[3].specular", 0.0f, 0.0f, 0.0f);
-	toonShader.setFloat("pointLights[3].constant", 1.0f);
-	toonShader.setFloat("pointLights[3].linear", 0.09f);
-	toonShader.setFloat("pointLights[3].quadratic", 0.032f);
+	toonShader.setFloat("pointLights[0].linear", 0.0014f);
+	toonShader.setFloat("pointLights[0].quadratic", 0.000007f);
 
 	toonShader.setVec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
 	toonShader.setVec3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -136,8 +105,9 @@ int main(void) {
 		toonShader.setMat4("view", view);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
 		toonShader.setMat4("model", model);
 
 		ourModel.Draw(toonShader);
