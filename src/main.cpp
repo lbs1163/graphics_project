@@ -63,7 +63,7 @@ int main(void) {
 	};
 
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
-	Model ourModel("./resources/models/IronMan/IronMan.obj");
+	Model ourModel("./resources/models/85-cottage_obj/cottage_obj.obj");
 
 	toonShader.use();
 	toonShader.setFloat("material.shininess", 32.0f);
