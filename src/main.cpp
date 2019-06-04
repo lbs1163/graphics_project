@@ -16,11 +16,12 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
+unsigned int loadTexture(const char *path);
 
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 3.0f));
+Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -28,7 +29,7 @@ bool firstMouse = true;
 float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
-bool useToon = true;
+bool useToon = false;
 
 int main(void) {
 	glfwInit();
@@ -59,56 +60,29 @@ int main(void) {
 	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
-	glm::vec3 pointLightPositions[] = {
-		glm::vec3(0.7f,  0.2f,  2.0f),
-		glm::vec3(2.3f, -3.3f, -4.0f),
-		glm::vec3(-4.0f,  2.0f, -12.0f),
-		glm::vec3(0.0f,  0.0f, -3.0f)
-	};
-
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
 	Shader outlineShader("./src/outline.vert", "./src/outline.frag");
-	Model ourModel("./resources/models/85-cottage_obj/cottage_obj.obj");
+	Model ourModel("./resources/models/Pirates/source/Ship.fbx");
+	glActiveTexture(GL_TEXTURE31);
+	unsigned int toonTexture = loadTexture("./resources/toon_texture.png");
+	glBindTexture(GL_TEXTURE_2D, toonTexture);
 
 	toonShader.use();
 	toonShader.setFloat("material.shininess", 32.0f);
-
+	toonShader.setInt("toonTexture", 31);
+	
 	toonShader.setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
 	toonShader.setVec3("dirLight.ambient", 0.05f, 0.05f, 0.05f);
 	toonShader.setVec3("dirLight.diffuse", 0.4f, 0.4f, 0.4f);
 	toonShader.setVec3("dirLight.specular", 0.0f, 0.0f, 0.0f);
 
-	toonShader.setVec3("pointLights[0].position", pointLightPositions[0]);
+	toonShader.setVec3("pointLights[0].position", 5.0f, 5.0f, 5.0f);
 	toonShader.setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
 	toonShader.setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
 	toonShader.setVec3("pointLights[0].specular", 0.0f, 0.0f, 0.0f);
 	toonShader.setFloat("pointLights[0].constant", 1.0f);
-	toonShader.setFloat("pointLights[0].linear", 0.09f);
-	toonShader.setFloat("pointLights[0].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[1].position", pointLightPositions[1]);
-	toonShader.setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[1].specular", 0.0f, 0.0f, 0.0f);
-	toonShader.setFloat("pointLights[1].constant", 1.0f);
-	toonShader.setFloat("pointLights[1].linear", 0.09f);
-	toonShader.setFloat("pointLights[1].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[2].position", pointLightPositions[2]);
-	toonShader.setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[2].specular", 0.0f, 0.0f, 0.0f);
-	toonShader.setFloat("pointLights[2].constant", 1.0f);
-	toonShader.setFloat("pointLights[2].linear", 0.09f);
-	toonShader.setFloat("pointLights[2].quadratic", 0.032f);
-
-	toonShader.setVec3("pointLights[3].position", pointLightPositions[3]);
-	toonShader.setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
-	toonShader.setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
-	toonShader.setVec3("pointLights[3].specular", 0.0f, 0.0f, 0.0f);
-	toonShader.setFloat("pointLights[3].constant", 1.0f);
-	toonShader.setFloat("pointLights[3].linear", 0.09f);
-	toonShader.setFloat("pointLights[3].quadratic", 0.032f);
+	toonShader.setFloat("pointLights[0].linear", 0.0014f);
+	toonShader.setFloat("pointLights[0].quadratic", 0.000007f);
 
 	toonShader.setVec3("spotLight.ambient", glm::vec3(0.0f, 0.0f, 0.0f));
 	toonShader.setVec3("spotLight.diffuse", glm::vec3(1.0f, 1.0f, 1.0f));
@@ -141,8 +115,9 @@ int main(void) {
 		toonShader.setMat4("view", view);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, -1.75f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
 		toonShader.setMat4("model", model);
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -210,4 +185,43 @@ void processInput(GLFWwindow *window) {
 		camera.ProcessKeyboard(RIGHT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
 		useToon = !useToon;
+}
+
+// utility function for loading a 2D texture from file
+// ---------------------------------------------------
+unsigned int loadTexture(char const *path)
+{
+	unsigned int textureID;
+	glGenTextures(1, &textureID);
+
+	int width, height, nrComponents;
+	unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+	if (data)
+	{
+		GLenum format;
+		if (nrComponents == 1)
+			format = GL_RED;
+		else if (nrComponents == 3)
+			format = GL_RGB;
+		else if (nrComponents == 4)
+			format = GL_RGBA;
+
+		glBindTexture(GL_TEXTURE_2D, textureID);
+		glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		stbi_image_free(data);
+	}
+	else
+	{
+		std::cout << "Texture failed to load at path: " << path << std::endl;
+		stbi_image_free(data);
+	}
+
+	return textureID;
 }

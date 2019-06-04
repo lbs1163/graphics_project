@@ -1,7 +1,7 @@
 #version 460 core
 out vec4 FragColor;
 
-#define NR_POINT_LIGHTS 4
+#define NR_POINT_LIGHTS 1
 
 struct Material {
     sampler2D texture_diffuse1;
@@ -61,6 +61,8 @@ uniform vec3 Kd;
 uniform vec3 Ks;
 uniform vec3 Ns;
 
+uniform sampler2D toonTexture;
+
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
 vec3 CalcSpotLight(SpotLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -75,11 +77,11 @@ void main() {
     for(int i = 0; i < NR_POINT_LIGHTS; i++)
         result += CalcPointLight(pointLights[i], norm, FragPos, viewDir);    
 
-	result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
+	//result += CalcSpotLight(spotLight, norm, FragPos, viewDir);
 
 	float detail = CalcDetail(length(viewPos - FragPos), norm, viewDir);
 
-	vec4 toonLight = texture(material.texture_specular1, vec2((result.x + result.y + result.z) / 3.0f, detail));
+	vec4 toonLight = texture(toonTexture, vec2((result.x + result.y + result.z) / 3.0f, detail));
 	vec4 textureColor = useTexture ? texture(material.texture_diffuse1, TexCoords) : vec4(Kd, 1.0f);
 
 	if (useToon)
