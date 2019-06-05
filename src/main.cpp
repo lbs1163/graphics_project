@@ -63,7 +63,7 @@ int main(void) {
 
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
 	Shader outlineShader("./src/outline.vert", "./src/outline.frag");
-	Model ourModel("./resources/models/Pirates/source/Ship.fbx");
+	Model ourModel("./resources/models/spiderman/Spiderman.obj");
 	glActiveTexture(GL_TEXTURE31);
 	unsigned int toonTexture = loadTexture("./resources/toon_texture.png");
 	glBindTexture(GL_TEXTURE_2D, toonTexture);
@@ -101,7 +101,7 @@ int main(void) {
 
 		processInput(window);
 
-		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
+		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		toonShader.use();
@@ -116,9 +116,9 @@ int main(void) {
 		toonShader.setMat4("view", view);
 
 		glm::mat4 model = glm::mat4(1.0f);
-		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
+		//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+		//model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
 		toonShader.setMat4("model", model);
 
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
@@ -126,7 +126,7 @@ int main(void) {
 		ourModel.Draw(toonShader);
 
 		outlineShader.use();
-		float scale = 1.1f;
+		float scale = 1.05f;
 		model = glm::scale(model, glm::vec3(scale, scale, scale));
 		outlineShader.setMat4("projection", projection);
 		outlineShader.setMat4("view", view);
