@@ -1,0 +1,66 @@
+# 3ds Max Wavefront OBJ Exporter v0.97b - (c)2007 guruware
+# File Created: 04.01.2017 22:36:50
+
+newmtl WallGround
+	Ns 68.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.1080 0.1080 0.1080
+	Ke 0.0000 0.0000 0.0000
+	map_Ka maps\WallGround_DIFF.jpg
+	map_Kd maps\WallGround_DIFF.jpg
+	map_d maps\WallGround_OPAC.jpg
+	map_bump maps\Map__63_Normal Bump.tga
+
+newmtl Barwita
+	Ns 95.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0360 0.0360 0.0360
+	Ke 0.0000 0.0000 0.0000
+	map_Ka maps\Barwita_DIFF.jpg
+	map_Kd maps\Barwita_DIFF.jpg
+	map_d maps\Barwita_OPAC.jpg
+	map_bump maps\Map__58_Normal Bump.tga
+
+newmtl March
+	Ns 64.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.2340 0.2340 0.2340
+	Ke 0.0000 0.0000 0.0000
+	map_Ka maps\March_DIFF.jpg
+	map_Kd maps\March_DIFF.jpg
+	map_d maps\March_OPAC.jpg
+	map_bump -bm 0.3000 maps\Map__70_Normal Bump.tga
+
+newmtl Misc
+	Ns 10.0000
+	Ni 1.5000
+	d 1.0000
+	Tr 0.0000
+	Tf 1.0000 1.0000 1.0000 
+	illum 2
+	Ka 0.5880 0.5880 0.5880
+	Kd 0.5880 0.5880 0.5880
+	Ks 0.0000 0.0000 0.0000
+	Ke 0.0000 0.0000 0.0000
+	map_Ka maps\Misc_DIFF.jpg
+	map_Kd maps\Misc_DIFF.jpg
+	map_d maps\Misc_OPAC.jpg
+	map_bump maps\Map__66_Normal Bump.tga

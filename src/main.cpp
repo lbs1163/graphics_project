@@ -21,7 +21,7 @@ unsigned int loadTexture(const char *path);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 10.0f, 10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -63,7 +63,8 @@ int main(void) {
 
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
 	Shader outlineShader("./src/outline.vert", "./src/outline.frag", "./src/outline.geom");
-	Model ourModel("./resources/models/spiderman/Spiderman.obj");
+	Model street("./resources/models/street/Alley.obj");
+	Model spiderman("./resources/models/spiderman/spiderman.obj");
 	glActiveTexture(GL_TEXTURE31);
 	unsigned int toonTexture = loadTexture("./resources/toon_texture.png");
 	glBindTexture(GL_TEXTURE_2D, toonTexture);
@@ -101,7 +102,7 @@ int main(void) {
 
 		processInput(window);
 
-		glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
 
 		toonShader.use();
@@ -118,12 +119,20 @@ int main(void) {
 		glm::mat4 model = glm::mat4(1.0f);
 		//model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
 		//model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
-		//model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
+		model = glm::scale(model, glm::vec3(0.02f, 0.02f, 0.02f));
 		toonShader.setMat4("model", model);
 
+		glStencilMask(0x00);
+		street.Draw(toonShader);
+
+		model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 4.0f, 0.1f));
+		model = glm::rotate(model, glm::radians(-20.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::scale(model, glm::vec3(0.8f, 0.8f, 0.8f));
+		toonShader.setMat4("model", model);
 		glStencilFunc(GL_ALWAYS, 1, 0xFF);
 		glStencilMask(0xFF);
-		ourModel.Draw(toonShader);
+		spiderman.Draw(toonShader);
 
 		outlineShader.use();
 		outlineShader.setMat4("projection", projection);
@@ -133,7 +142,7 @@ int main(void) {
 		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
 		glStencilMask(0x00);
 		glDisable(GL_DEPTH_TEST);
-		ourModel.Draw(outlineShader);
+		spiderman.Draw(outlineShader);
 		glStencilMask(0xFF);
 		glEnable(GL_DEPTH_TEST);
 
