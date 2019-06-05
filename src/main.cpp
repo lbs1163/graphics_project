@@ -30,6 +30,7 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 bool useToon = false;
+bool keyDown = false;
 
 int main(void) {
 	glfwInit();
@@ -183,8 +184,12 @@ void processInput(GLFWwindow *window) {
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS)
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && !keyDown) {
 		useToon = !useToon;
+		keyDown = true;
+	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE && keyDown)
+		keyDown = false;
 }
 
 // utility function for loading a 2D texture from file
