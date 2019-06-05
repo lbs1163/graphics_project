@@ -62,7 +62,7 @@ int main(void) {
 	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
-	Shader outlineShader("./src/outline.vert", "./src/outline.frag");
+	Shader outlineShader("./src/outline.vert", "./src/outline.frag", "./src/outline.geom");
 	Model ourModel("./resources/models/spiderman/Spiderman.obj");
 	glActiveTexture(GL_TEXTURE31);
 	unsigned int toonTexture = loadTexture("./resources/toon_texture.png");
@@ -126,8 +126,6 @@ int main(void) {
 		ourModel.Draw(toonShader);
 
 		outlineShader.use();
-		float scale = 1.05f;
-		model = glm::scale(model, glm::vec3(scale, scale, scale));
 		outlineShader.setMat4("projection", projection);
 		outlineShader.setMat4("view", view);
 		outlineShader.setMat4("model", model);

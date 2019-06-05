@@ -166,6 +166,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="src\outline.frag" />
+    <None Include="src\outline.geom" />
     <None Include="src\outline.vert" />
     <None Include="src\toon.frag" />
     <None Include="src\toon.vert" />
