@@ -21,7 +21,7 @@ unsigned int loadTexture(const char *path);
 const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
-Camera camera(glm::vec3(0.0f, 0.0f, 10.0f));
+Camera camera(glm::vec3(0.0f, 10.0f, 10.0f));
 float lastX = SCR_WIDTH / 2.0f;
 float lastY = SCR_HEIGHT / 2.0f;
 bool firstMouse = true;
@@ -30,7 +30,11 @@ float deltaTime = 0.0f;
 float lastFrame = 0.0f;
 
 bool useToon = false;
-bool keyDown = false;
+bool keyDownT = false;
+bool keyDownF = false;
+
+float startFrame = 0.0f;
+bool transition = true;
 
 int main(void) {
 	glfwInit();
@@ -57,12 +61,8 @@ int main(void) {
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
-	glEnable(GL_STENCIL_TEST);
-	glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-	glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
 	Shader toonShader("./src/toon.vert", "./src/toon.frag");
-	Shader outlineShader("./src/outline.vert", "./src/outline.frag");
 	Model ourModel("./resources/models/Pirates/source/Ship.fbx");
 	glActiveTexture(GL_TEXTURE31);
 	unsigned int toonTexture = loadTexture("./resources/toon_texture.png");
@@ -102,13 +102,14 @@ int main(void) {
 		processInput(window);
 
 		glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		toonShader.use();
 		toonShader.setVec3("viewPos", camera.Position);
 		toonShader.setVec3("spotLight.position", camera.Position);
 		toonShader.setVec3("spotLight.direction", camera.Front);
 		toonShader.setBool("useToon", useToon);
+		toonShader.setBool("transition", transition);
 
 		glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 100.0f);
 		glm::mat4 view = camera.GetViewMatrix();
@@ -120,24 +121,11 @@ int main(void) {
 		model = glm::rotate(model, glm::radians(-90.0f), glm::vec3(1.0f, 0.0f, 0.0f));
 		model = glm::scale(model, glm::vec3(0.001f, 0.001f, 0.001f));
 		toonShader.setMat4("model", model);
-
-		glStencilFunc(GL_ALWAYS, 1, 0xFF);
-		glStencilMask(0xFF);
-		ourModel.Draw(toonShader);
-
-		outlineShader.use();
-		float scale = 1.1f;
-		model = glm::scale(model, glm::vec3(scale, scale, scale));
-		outlineShader.setMat4("projection", projection);
-		outlineShader.setMat4("view", view);
-		outlineShader.setMat4("model", model);
 		
-		glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-		glStencilMask(0x00);
-		glDisable(GL_DEPTH_TEST);
-		ourModel.Draw(outlineShader);
-		glStencilMask(0xFF);
-		glEnable(GL_DEPTH_TEST);
+		toonShader.setFloat("startFrame", startFrame);
+		toonShader.setFloat("currentFrame", currentFrame);
+
+		ourModel.Draw(toonShader);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents();
@@ -184,12 +172,19 @@ void processInput(GLFWwindow *window) {
 		camera.ProcessKeyboard(LEFT, deltaTime);
 	if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
 		camera.ProcessKeyboard(RIGHT, deltaTime);
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && !keyDown) {
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_PRESS && !keyDownT) {
 		useToon = !useToon;
-		keyDown = true;
+		startFrame = (float)glfwGetTime();
+		keyDownT = true;
 	}
-	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE && keyDown)
-		keyDown = false;
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && !keyDownF) {
+		transition = !transition;
+		keyDownF = true;
+	}
+	if (glfwGetKey(window, GLFW_KEY_T) == GLFW_RELEASE && keyDownT)
+		keyDownT = false;
+	if (glfwGetKey(window, GLFW_KEY_F) == GLFW_RELEASE && keyDownF)
+		keyDownF = false;
 }
 
 // utility function for loading a 2D texture from file

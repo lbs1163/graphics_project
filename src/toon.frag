@@ -47,6 +47,7 @@ struct SpotLight {
 in vec3 FragPos;
 in vec2 TexCoords;
 in vec3 Normal;
+in float x;
 
 uniform vec3 viewPos;
 uniform Material material;
@@ -62,6 +63,10 @@ uniform vec3 Ks;
 uniform vec3 Ns;
 
 uniform sampler2D toonTexture;
+
+uniform float startFrame;
+uniform float currentFrame;
+uniform bool transition;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
 vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir);
@@ -84,10 +89,21 @@ void main() {
 	vec4 toonLight = texture(toonTexture, vec2((result.x + result.y + result.z) / 3.0f, detail));
 	vec4 textureColor = useTexture ? texture(material.texture_diffuse1, TexCoords) : vec4(Kd, 1.0f);
 
-	if (useToon)
-		FragColor = toonLight * textureColor;
-	else
-		FragColor = vec4(result, 1.0f) * textureColor;
+	float interval = 1.0f;
+	float delta = currentFrame - startFrame;
+
+	if (transition && delta < interval && (x + 1.0f) / 2.0f > delta / interval) {
+		if (!useToon)
+			FragColor = toonLight * textureColor;
+		else
+			FragColor = vec4(result, 1.0f) * textureColor;
+	} else {
+		if (useToon)
+			FragColor = toonLight * textureColor;
+		else
+			FragColor = vec4(result, 1.0f) * textureColor;
+	}
+	
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir) {
