@@ -165,6 +165,8 @@
     <ClInclude Include="src\shader.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="src\cover.frag" />
+    <None Include="src\cover.vert" />
     <None Include="src\outline.frag" />
     <None Include="src\outline.geom" />
     <None Include="src\outline.vert" />
